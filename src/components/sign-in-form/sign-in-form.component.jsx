@@ -1,12 +1,11 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
-
-import { UserContext } from "../../contexts/user.context";
 
 import {
   signInWithGooglePopup,
   signInAuthUserWithEmailAndPassword,
+  createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
 import "./sign-in-form.styles.scss";
@@ -20,15 +19,12 @@ const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const { setCurrentUser } = useContext(UserContext);
-
   const resetFormField = () => {
     setFormFields(defaultFormFields);
   };
 
   const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    setCurrentUser(user);
+    await signInWithGooglePopup();
   };
 
   const handleSubmit = async (event) => {
@@ -40,7 +36,6 @@ const SignInForm = () => {
       );
 
       resetFormField();
-      setCurrentUser(user);
     } catch (error) {
       switch (error.code) {
         case "auth/wrong-password":
@@ -86,7 +81,7 @@ const SignInForm = () => {
           <Button type="submit">Sign In</Button>
           <Button
             type="button"
-            buttonType={BUTTON_TYPE_CLASSES.google}
+            buttonType={"google"}
             onClick={signInWithGoogle}
           >
             Google sign in
